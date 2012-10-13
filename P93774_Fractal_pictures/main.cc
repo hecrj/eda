@@ -5,6 +5,10 @@ using namespace std;
 
 typedef vector< vector<bool> > Fractal;
 
+/**
+ * Reads a fractal picture in f.
+ * @param f An empty fractal picture.
+ */
 void read(Fractal &f)
 {
 	int n = f.size();
@@ -22,6 +26,10 @@ void read(Fractal &f)
 	}
 }
 
+/**
+ * Prints a fractal picture.
+ * @param f A fractal picture.
+ */
 void print(const Fractal &f)
 {
 	int n = f.size();
@@ -38,6 +46,14 @@ void print(const Fractal &f)
 	cout << endl;
 }
 
+/**
+ * Inserts a fractal picture into another given the coordinates where to insert it.
+ * @param o    The fractal picture to be inserted
+ * @param d    The fractal picture where to insert o
+ * @param di   Row coordinate
+ * @param dj   Column coordinate
+ * @param copy If false, it only creates an empty space with the size of o
+ */
 void fractal_copy(const Fractal &o, Fractal &d, int di, int dj, bool copy)
 {
 	int n = o.size();
@@ -56,6 +72,13 @@ void fractal_copy(const Fractal &o, Fractal &d, int di, int dj, bool copy)
 	}
 }
 
+/**
+ * Fractalizes a fractal picture given the model to follow and the fractal picture
+ * to insert.
+ * @param fm The model fractal picture
+ * @param o  The fractal picture to insert
+ * @param d  The resulting fractalized picture
+ */
 void fractalize_model(const Fractal &fm, const Fractal &o, Fractal &d)
 {
 	int dn = fm.size() * o.size();
@@ -67,24 +90,24 @@ void fractalize_model(const Fractal &fm, const Fractal &o, Fractal &d)
 	int m = fm[0].size();
 
 	for(int i = 0; i < n; ++i)
-	{
 		for(int j = 0; j < m; ++j)
-		{
 			fractal_copy(o, d, i, j, fm[i][j]);
-		}
-	}
 }
 
+/**
+ * Fractalizes a fractal picture a given number of steps.
+ * @param f  The fractal picture to fractalize
+ * @param fk The resulting fractalized picture
+ * @param k  Number of steps to fractalize f
+ */
 void fractalize(const Fractal &f, Fractal &fk, int k)
 {
 	if(k <= 0)
-	{
 		fk = Fractal(1, vector<bool>(1, true));
-	}
+	
 	else if(k == 1)
-	{
 		fk = f;
-	}
+
 	else
 	{
 		Fractal fk_2;
@@ -102,6 +125,12 @@ void fractalize(const Fractal &f, Fractal &fk, int k)
 	}
 }
 
+/**
+ * Calculates n^k using a divide and conquer approach.
+ * @param  n Base
+ * @param  k Exponent
+ * @return n^k
+ */
 long long int my_power(int n, int k)
 {
 	if(k == 0) return 1;
@@ -111,12 +140,21 @@ long long int my_power(int n, int k)
 
 	res = res * res;
 
-	if(k%2 != 0)
-		return res * n;
-	else
+	if(k%2 == 0)
 		return res;
+
+	return res * n;
 }
 
+/**
+ * Given a fractal picture, tells whether the position (r, c) is
+ * marked or not after fractalizing it k times.
+ * @param  f A fractal picture
+ * @param  k Number of steps
+ * @param  r Row coordinate
+ * @param  c Column coordinate
+ * @return True if the position it's marked, false otherwise
+ */
 bool is_marked(const Fractal &f, int k, long long int r, long long int c)
 {
 	if(k <= 0) return true;
@@ -135,12 +173,16 @@ bool is_marked(const Fractal &f, int k, long long int r, long long int c)
 	long long int nk_2 = my_power(f.size(), k_2);
 	long long int mk_2 = my_power(f[0].size(), k_2);
 
-	if(! is_marked(f, k_2, r / nk_2, c / mk_2) or ! is_marked(f, k_2, r % nk_2, c % mk_2))
-		return false;
-
-	return true;
+	return (
+		is_marked(f, k_2, r / nk_2, c / mk_2) and
+		is_marked(f, k_2, r % nk_2, c % mk_2)
+		);
 }
 
+/**
+ * Prints fractal pictures and ask some questions about them.
+ * @return Execution status
+ */
 int main()
 {
 	int n, m;
