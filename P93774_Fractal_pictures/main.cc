@@ -180,7 +180,7 @@ bool is_marked(const Fractal &f, int k, long long int r, long long int c)
 }
 
 /**
- * Prints fractal pictures and ask some questions about them.
+ * Prints fractal pictures and answers some questions about them.
  * @return Execution status
  */
 int main()
