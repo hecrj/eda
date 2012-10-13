@@ -1,0 +1,4 @@
+Estructura de Datos y Algoritmos
+=================================
+
+Repositorio de código de la asignatura **EDA** de la **F**acultad de **I**nformática de **B**arcelona.
