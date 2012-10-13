@@ -95,7 +95,7 @@ void fractalize_model(const Fractal &fm, const Fractal &o, Fractal &d)
 }
 
 /**
- * Fractalizes a fractal picture a given number of steps.
+ * Fractalizes a fractal picture given the number of steps.
  * @param f  The fractal picture to fractalize
  * @param fk The resulting fractalized picture
  * @param k  Number of steps to fractalize f
