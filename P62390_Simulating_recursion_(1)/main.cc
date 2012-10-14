@@ -17,11 +17,9 @@ using namespace std;
  */
 void print(int n)
 {
-	cout << ' ' << n;
-
 	stack<int> s;
 
-	for(int i = 1; i < n; ++i)
+	for(int i = 1; i <= n; ++i)
 	{
 		stack<int> sc(s);
 		stack<int> inv;
@@ -41,18 +39,10 @@ void print(int n)
 		s.push(i);
 	}
 
-	stack<int> s2(s);
-
-	while(!s.empty())
+	while(! s.empty())
 	{
 		cout << ' ' << s.top();
 		s.pop();
-	}
-
-	while(!s2.empty())
-	{
-		cout << ' ' << s2.top();
-		s2.pop();
 	}
 }
 
