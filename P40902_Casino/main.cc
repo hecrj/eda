@@ -13,13 +13,13 @@ class Casino
 private:
 	map<string, int> players;
 
+	bool is_in(const string &player);
 	void already_in(const string &player);
 	void not_in(const string &player);
 
 public:
 	Casino();
 
-	bool is_in(const string &player);
 	void enters(const string &player);
 	void leaves(const string &player);
 	void wins(const string &player, int amount);
@@ -32,6 +32,16 @@ public:
 Casino::Casino()
 {
 
+}
+
+/**
+ * Tells whether a player is already in the casino or not.
+ * @param  player The name of the player
+ * @return        True if player is in the casino, false otherwise
+ */
+bool Casino::is_in(const string &player)
+{
+	return (players.find(player) != players.end());
 }
 
 /**
@@ -50,16 +60,6 @@ void Casino::already_in(const string &player)
 void Casino::not_in(const string &player)
 {
 	cout << player << " is not in the casino" << endl;
-}
-
-/**
- * Tells whether a player is already in the casino or not.
- * @param  player The name of the player
- * @return        True if player is in the casino, false otherwise
- */
-bool Casino::is_in(const string &player)
-{
-	return (players.find(player) != players.end());
 }
 
 /**
