@@ -12,10 +12,11 @@ typedef set<int>::const_iterator Iterator;
  * Given two sets obtains the size of the longest incresing
  * sequence interspersing the numbers of every set.
  * @param  a   A set of integers
- * @param  it1 Current position of a
+ * @param  it1 Current position in a
  * @param  b   A set of integers
- * @param  it2 [description]
- * @return     [description]
+ * @param  it2 Current position in b
+ * @return     Size of the longest sequence from it1 to a.end() and
+ *                  it2 to b.end()
  */
 int get_size_longest_sequence_i(const set<int> &a, Iterator &it1,
 	const set<int> &b, Iterator &it2)
@@ -29,6 +30,14 @@ int get_size_longest_sequence_i(const set<int> &a, Iterator &it1,
 	return 1 + get_size_longest_sequence_i(b, it2, a, it1);
 }
 
+/**
+ * Given two sets obtains the size of the longest incresing
+ * sequence interspersing the numbers of every set.
+ * @param  a A set of integers
+ * @param  b A set of integers
+ * @return   Size of the longest increasint and interspersed sequence
+ *                of a and b.
+ */
 int get_size_longest_sequence(const set<int> &a, const set<int> &b)
 {
 	Iterator it1 = a.begin();
@@ -46,6 +55,13 @@ int get_size_longest_sequence(const set<int> &a, const set<int> &b)
 		return get_size_longest_sequence_i(b, it2, a, it1);
 }
 
+/**
+ * Given an input line of integers obtains two sets
+ * classifying each integer in even or odd.
+ * @param line Line of integers
+ * @param even Set of even numbers
+ * @param odd  Set of odd numbers
+ */
 void read_sequence(const string &line, set<int> &even, set<int> &odd)
 {
 	stringstream stream(line);
@@ -58,6 +74,12 @@ void read_sequence(const string &line, set<int> &even, set<int> &odd)
 	}
 }
 
+/**
+ * Reads lines of integers and obtains the size of the
+ * longest increasing and interspersed sequence of even
+ * and odd numbers.
+ * @return Execution status
+ */
 int main()
 {
 	string line;
