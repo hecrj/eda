@@ -7,7 +7,7 @@ using namespace std;
 typedef vector< vector<char> > Map;
 
 /**
- * Tells wheter there is a treasure reachable in a map starting
+ * Tells whether there is a treasure reachable in a map starting
  * in the (x, y) position.
  * @param  map     A treasure map!
  * @param  visited Set of visited coordinates
