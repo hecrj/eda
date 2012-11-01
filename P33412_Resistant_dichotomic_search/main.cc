@@ -36,7 +36,7 @@ bool resistant_search_i(double x, const vector<double> &v, int l, int r)
 /**
  * Tells whether x is in v.
  * @param  x [description]
- * @param  v An 'almost' sorted vector. By 'almot' sorted we understand
+ * @param  v An 'almost' sorted vector. By 'almost' sorted we understand
  *           a vector that can have at most a pair of indices i and j
  *           such that 0 <= i < j < v.size() and v[i] > v[j]
  * @return   True if x belongs to v, false otherwise
