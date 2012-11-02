@@ -1,8 +1,6 @@
 #include <iostream>
 #include <limits>
 #include <vector>
-#include <queue>
-#include <map>
 #include <set>
 
 using namespace std;
@@ -12,18 +10,15 @@ const int max_dist = numeric_limits<int>::max();
 typedef pair<int, int> Node;
 typedef vector< vector<char> > Map;
 typedef set< pair<int, Node> > Nodes;
-typedef map<Node, int> Dist;
-typedef map<Node, Node> Prev;
+typedef vector< vector<int> > Dist;
 
 /**
- * Map information: set of nodes, minimum distances
- * and previous nodes.
+ * Map information: set of nodes and minimum distances.
  */
 struct MapInfo
 {
 	Nodes nodes;
 	Dist min_dist;
-	Prev previous;
 };
 
 /**
@@ -36,16 +31,15 @@ struct MapInfo
 void read_map(Map &map, MapInfo &info, int n, int m)
 {
 	map = Map(n, vector<char>(m));
+	info.min_dist = Dist(n, vector<int>(m));
 
 	for(int i = 0; i < n; ++i)
 	{
 		for(int j = 0; j < m; ++j)
 		{
 			cin >> map[i][j];
-			
-			Node node = make_pair(j, i);
 						
-			info.min_dist[node] = max_dist;
+			info.min_dist[i][j] = max_dist;
 		}
 	}
 }
@@ -69,16 +63,15 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 
 	if(map[v.second][v.first] != 'X')
 	{
-		int dist = 1 + info.min_dist[u];
+		int dist = 1 + info.min_dist[u.second][u.first];
 
-		int min_dist_v = info.min_dist[v];
+		int min_dist_v = info.min_dist[v.second][v.first];
 
 		if(dist < min_dist_v)
 		{
 			info.nodes.erase(make_pair(min_dist_v, v));
 
-			info.min_dist[v] = dist;
-			info.previous[v] = u;
+			info.min_dist[v.second][v.first] = dist;
 
 			info.nodes.insert(make_pair(dist, v));
 		}
@@ -96,7 +89,7 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
  */
 bool calculate_path_dijkstra(const Map &map, MapInfo &info, Node n, Node &t)
 {
-	info.min_dist[n] = 0;
+	info.min_dist[n.second][n.first] = 0;
 	info.nodes.insert(make_pair(0, n));
 
 	while(! info.nodes.empty())
@@ -135,7 +128,7 @@ bool calculate_path(const Map &map, MapInfo &info, Node n, int &d)
 	
 	if(calculate_path_dijkstra(map, info, n, t))
 	{
-		d = info.min_dist[t];
+		d = info.min_dist[t.second][t.first];
 
 		return true;
 	}
