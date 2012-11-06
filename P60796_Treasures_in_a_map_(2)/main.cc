@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <vector>
-#include <set>
+#include <queue>
 
 using namespace std;
 
@@ -9,7 +9,7 @@ const int max_dist = numeric_limits<int>::max();
 
 typedef pair<int, int> Node;
 typedef vector< vector<char> > Map;
-typedef set< pair<int, Node> > Nodes;
+typedef queue<Node> Nodes;
 typedef vector< vector<int> > Dist;
 
 /**
@@ -57,8 +57,10 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 {
 	Node v = make_pair(u.first + i, u.second + j);
 	
-	if(v.first < 0 or v.first >= map[0].size() or
-		v.second < 0 or v.second >= map.size())
+	if(v.first < 0 or v.first >= map[0].size())
+		return;
+
+	if(v.second < 0 or v.second >= map.size())
 		return;
 
 	if(map[v.second][v.first] != 'X')
@@ -69,11 +71,9 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 
 		if(dist < min_dist_v)
 		{
-			info.nodes.erase(make_pair(min_dist_v, v));
-
 			info.min_dist[v.second][v.first] = dist;
 
-			info.nodes.insert(make_pair(dist, v));
+			info.nodes.push(v);
 		}
 	}
 }
@@ -90,12 +90,12 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 bool calculate_path_dijkstra(const Map &map, MapInfo &info, Node n, Node &t)
 {
 	info.min_dist[n.second][n.first] = 0;
-	info.nodes.insert(make_pair(0, n));
+	info.nodes.push(n);
 
 	while(! info.nodes.empty())
 	{
-		Node u = info.nodes.begin()->second;
-		info.nodes.erase(info.nodes.begin());
+		Node u = info.nodes.front();
+		info.nodes.pop();
 
 		if(map[u.second][u.first] == 't')
 		{
