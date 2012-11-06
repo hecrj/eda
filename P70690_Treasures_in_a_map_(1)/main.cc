@@ -1,11 +1,36 @@
 #include <iostream>
 #include <vector>
-#include <set>
+#include <queue>
 
 using namespace std;
 
 typedef vector< vector<char> > Map;
+typedef vector< vector<bool> > Visited;
 typedef pair<int, int> Node;
+typedef queue<Node> Pending;
+
+/**
+ * Adds an adjacent node to the pending nodes of a map given
+ * the relative position of the adjacent node (i, j)
+ * @param map  A treasure map
+ * @param pending Pending nodes
+ * @param n    Current node
+ * @param i    Relative x coordinate
+ * @param j    Relative y coordinate
+ */
+void push_adjacent(const Map &map, Pending &pending, Node n, int i, int j)
+{
+	Node v = make_pair(n.first + i, n.second + j);
+	
+	if(v.first < 0 or v.first >= map[0].size())
+		return;
+
+	if(v.second < 0 or v.second >= map.size())
+		return;
+
+	if(map[v.second][v.first] != 'X')
+		pending.push(v);
+}
 
 /**
  * Tells whether there is a treasure reachable in a map starting
@@ -16,31 +41,31 @@ typedef pair<int, int> Node;
  * @return         True if exists a map reachable starting from n,
  *                      false otherwise
  */
-bool is_reachable_i(const Map &map, set<Node> &visited, Node n)
+bool is_reachable_i(const Map &map, Pending &pending, Visited &visited)
 {
-	if(n.first < 0 or n.second < 0)
+	if(pending.empty())
 		return false;
 
-	if(n.first >= map[0].size() or n.second >= map.size())
-		return false;
+	while(not pending.empty())
+	{
+		Node n = pending.front();
+		pending.pop();
 
-	if(map[n.second][n.first] == 'X')
-		return false;
+		if(not visited[n.second][n.first])
+		{
+			visited[n.second][n.first] = true;
 
-	if(visited.find(n) != visited.end())
-		return false;
+			if(map[n.second][n.first] == 't')
+				return true;
 
-	visited.insert(n);
+			push_adjacent(map, pending, n, 1, 0);
+			push_adjacent(map, pending, n, 0, 1);
+			push_adjacent(map, pending, n, -1, 0);
+			push_adjacent(map, pending, n, 0, -1);
+		}
+	}
 
-	if(map[n.second][n.first] == 't')
-		return true;
-
-	return (
-		is_reachable_i(map, visited, make_pair(n.first + 1, n.second)) or
-		is_reachable_i(map, visited, make_pair(n.first, n.second + 1)) or
-		is_reachable_i(map, visited, make_pair(n.first - 1, n.second)) or
-		is_reachable_i(map, visited, make_pair(n.first, n.second - 1))
-	);
+	return false;
 }
 
 /**
@@ -52,9 +77,11 @@ bool is_reachable_i(const Map &map, set<Node> &visited, Node n)
  */
 bool is_reachable(const Map &map, Node n)
 {
-	set<Node> visited;
+	Visited visited(map.size(), vector<bool>(map[0].size(), false));
+	Pending pending;
+	pending.push(n);
 
-	return is_reachable_i(map, visited, n);
+	return is_reachable_i(map, pending, visited);
 }
 
 /**
