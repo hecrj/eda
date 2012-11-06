@@ -7,18 +7,17 @@ using namespace std;
 
 const int max_dist = numeric_limits<int>::max();
 
-typedef pair<int, int> Node;
 typedef vector< vector<char> > Map;
-typedef queue<Node> Nodes;
-typedef vector< vector<int> > Dist;
+typedef pair<int, int> Node;
+typedef vector< vector<int> > Distances;
 
 /**
- * Map information: set of nodes and minimum distances.
+ * Map information: pending nodes and minimum distances.
  */
 struct MapInfo
 {
-	Nodes nodes;
-	Dist min_dist;
+	queue<Node> pending;
+	Distances min_dist;
 };
 
 /**
@@ -31,7 +30,7 @@ struct MapInfo
 void read_map(Map &map, MapInfo &info, int n, int m)
 {
 	map = Map(n, vector<char>(m));
-	info.min_dist = Dist(n, vector<int>(m));
+	info.min_dist = Distances(n, vector<int>(m));
 
 	for(int i = 0; i < n; ++i)
 	{
@@ -65,15 +64,14 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 
 	if(map[v.second][v.first] != 'X')
 	{
-		int dist = 1 + info.min_dist[u.second][u.first];
-
+		int new_dist = 1 + info.min_dist[u.second][u.first];
 		int min_dist_v = info.min_dist[v.second][v.first];
 
-		if(dist < min_dist_v)
+		if(new_dist < min_dist_v)
 		{
-			info.min_dist[v.second][v.first] = dist;
+			info.min_dist[v.second][v.first] = new_dist;
 
-			info.nodes.push(v);
+			info.pending.push(v);
 		}
 	}
 }
@@ -90,12 +88,12 @@ void adjacent_update(const Map &map, MapInfo &info, Node u, int i, int j)
 bool calculate_path_dijkstra(const Map &map, MapInfo &info, Node n, Node &t)
 {
 	info.min_dist[n.second][n.first] = 0;
-	info.nodes.push(n);
+	info.pending.push(n);
 
-	while(! info.nodes.empty())
+	while(! info.pending.empty())
 	{
-		Node u = info.nodes.front();
-		info.nodes.pop();
+		Node u = info.pending.front();
+		info.pending.pop();
 
 		if(map[u.second][u.first] == 't')
 		{

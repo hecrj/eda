@@ -5,20 +5,19 @@
 using namespace std;
 
 typedef vector< vector<char> > Map;
-typedef vector< vector<bool> > Visited;
+typedef vector< vector<bool> > Marks;
 typedef pair<int, int> Node;
-typedef queue<Node> Pending;
 
 /**
  * Adds an adjacent node to the pending nodes of a map given
  * the relative position of the adjacent node (i, j)
  * @param map  A treasure map
- * @param pending Pending nodes
+ * @param pending queue<Node> nodes
  * @param n    Current node
  * @param i    Relative x coordinate
  * @param j    Relative y coordinate
  */
-void push_adjacent(const Map &map, Pending &pending, Node n, int i, int j)
+void push_adjacent(const Map &map, queue<Node> &pending, Node n, int i, int j)
 {
 	Node v = make_pair(n.first + i, n.second + j);
 	
@@ -33,18 +32,17 @@ void push_adjacent(const Map &map, Pending &pending, Node n, int i, int j)
 }
 
 /**
- * Tells whether there is a treasure reachable in a map starting
- * from n node.
- * @param  map     A treasure map!
- * @param  visited Set of visited coordinates
- * @param  n       Current node
- * @return         True if exists a map reachable starting from n,
- *                      false otherwise
+ * Tells whether there is a treasure reachable in the map starting
+ * from n.
+ * @param  map A treasure map
+ * @param  n   The starting node
+ * @return     True if there is any treasure reachable
  */
-bool is_reachable_i(const Map &map, Pending &pending, Visited &visited)
+bool is_reachable(const Map &map, Node n)
 {
-	if(pending.empty())
-		return false;
+	Marks visited(map.size(), vector<bool>(map[0].size(), false));
+	queue<Node> pending;
+	pending.push(n);
 
 	while(not pending.empty())
 	{
@@ -66,22 +64,6 @@ bool is_reachable_i(const Map &map, Pending &pending, Visited &visited)
 	}
 
 	return false;
-}
-
-/**
- * Tells whether there is a treasure reachable in the map starting
- * from n.
- * @param  map A treasure map
- * @param  n   The starting node
- * @return     True if there is any treasure reachable
- */
-bool is_reachable(const Map &map, Node n)
-{
-	Visited visited(map.size(), vector<bool>(map[0].size(), false));
-	Pending pending;
-	pending.push(n);
-
-	return is_reachable_i(map, pending, visited);
 }
 
 /**

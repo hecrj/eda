@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <set>
+#include <queue>
 
 using namespace std;
 
 typedef vector< vector<char> > Map;
+typedef vector< vector<bool> > Marks;
 typedef pair<int, int> Node;
 
 /**
@@ -23,37 +24,61 @@ void read_map(Map &map, int n, int m)
 }
 
 /**
+ * Adds an adjacent node to the pending nodes of a map given
+ * the relative position of the adjacent node (i, j)
+ * @param map  A treasure map
+ * @param pending queue<Node> nodes
+ * @param n    Current node
+ * @param i    Relative x coordinate
+ * @param j    Relative y coordinate
+ */
+void push_adjacent(const Map &map, queue<Node> &pending, Node n, int i, int j)
+{
+	Node v = make_pair(n.first + i, n.second + j);
+	
+	if(v.first < 0 or v.first >= map[0].size())
+		return;
+
+	if(v.second < 0 or v.second >= map.size())
+		return;
+
+	if(map[v.second][v.first] != 'X')
+		pending.push(v);
+}
+
+/**
  * Gets the number of reachable treasures starting from the node n.
  * @param  map     A treasure map!
  * @param  visited Set of visited nodes
  * @param  n       Current node
  * @return         The number of reachable treasures starting from n.
  */
-int get_treasures(const Map &map, set<Node> &visited, Node n)
+int get_treasures(const Map &map, Node n)
 {
-	if(n.first < 0 or n.second < 0)
-		return 0;
+	int treasures = 0;
+	
+	Marks visited(map.size(), vector<bool>(map[0].size(), false));
+	queue<Node> pending;
+	pending.push(n);
 
-	if(n.first >= map[0].size() or n.second >= map.size())
-		return 0;
+	while(not pending.empty())
+	{
+		Node n = pending.front();
+		pending.pop();
 
-	if(map[n.second][n.first] == 'X')
-		return 0;
+		if(not visited[n.second][n.first])
+		{
+			visited[n.second][n.first] = true;
 
-	if(visited.find(n) != visited.end())
-		return 0;
+			if(map[n.second][n.first] == 't')
+				treasures++;
 
-	visited.insert(n);
-
-	int treasures = (
-		get_treasures(map, visited, make_pair(n.first + 1, n.second)) +
-		get_treasures(map, visited, make_pair(n.first, n.second + 1)) +
-		get_treasures(map, visited, make_pair(n.first - 1, n.second)) +
-		get_treasures(map, visited, make_pair(n.first, n.second - 1))
-	);
-
-	if(map[n.second][n.first] == 't')
-		return 1 + treasures;
+			push_adjacent(map, pending, n, 1, 0);
+			push_adjacent(map, pending, n, 0, 1);
+			push_adjacent(map, pending, n, -1, 0);
+			push_adjacent(map, pending, n, 0, -1);
+		}
+	}
 
 	return treasures;
 }
@@ -71,13 +96,10 @@ int main()
 	Map map;
 	read_map(map, n, m);
 
-	Node node;
-	cin >> node.second >> node.first;
+	int r, c;
+	cin >> r >> c;
 
-	node.first--;
-	node.second--;
+	cout << get_treasures(map, make_pair(c-1, r-1)) << endl;
 
-	set<Node> visited;
-
-	cout << get_treasures(map, visited, node) << endl;
+	return 0;
 }
