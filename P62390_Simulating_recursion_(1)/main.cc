@@ -18,31 +18,21 @@ using namespace std;
 void print(int n)
 {
 	stack<int> s;
+	s.push(n);
 
-	for(int i = 1; i <= n; ++i)
+	int c;
+	while(not s.empty())
 	{
-		stack<int> sc(s);
-		stack<int> inv;
-
-		while(! sc.empty())
-		{
-			inv.push(sc.top());
-			sc.pop();
-		}
-
-		while(! inv.empty())
-		{
-			s.push(inv.top());
-			inv.pop();
-		}
-
-		s.push(i);
-	}
-
-	while(! s.empty())
-	{
-		cout << ' ' << s.top();
+		c = s.top();
 		s.pop();
+
+		cout << ' ' << c;
+
+		if(c > 1)
+		{
+			s.push(c-1);
+			s.push(c-1);
+		}
 	}
 }
 
